@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CuentaClaro</title>
+  <style>
+    :root {
+      --bg: #EAEFF5;
+      --card: #FFFFFF;
+      --dark: #1E293B;
+      --blue: #2563EB;
+      --teal: #0D9488;
+      --amber: #D97706;
+      --purple: #7C3AED;
+      --rose: #E11D48;
+      --text: #0F172A;
+      --muted: #475569;
+      --border: #CBD5E1;
+      --radius: 16px;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+    }
+    .container {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    header {
+      background: var(--dark);
+      padding: 14px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #FFF;
+      text-decoration: none;
+    }
+    .logo span {
+      color: #38BDF8;
+    }
+    .nav-link, .dropdown-toggle {
+      color: #94A3B8;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.92rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-left: 15px;
+    }
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #0F172A;
+      min-width: 240px;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 8px 0;
+      z-index: 1000;
+    }
+    .dropdown-menu a {
+      color: #CBD5E1;
+      padding: 10px 16px;
+      text-decoration: none;
+      display: block;
+      font-size: 0.88rem;
+    }
+    .dropdown-menu a:hover {
+      background: #1E293B;
+      color: #38BDF8;
+    }
+    .dropdown:hover .dropdown-menu {
+      display: block;
+    }
+    .view-panel {
+      display: none;
+      padding: 30px 0;
+    }
+    .view-panel.active-view {
+      display: block;
+    }
+    .hero-banner {
+      background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+      color: #FFF;
+      border-radius: var(--radius);
+      padding: 35px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 30px;
+      align-items: center;
+      margin-bottom: 35px;
+    }
+    .hero-tag {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38BDF8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+    .hero-content h1 {
+      font-size: 2rem;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .hero-content p {
+      color: #94A3B8;
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
+    .btn-hero {
+      background: var(--blue);
+      color: #FFF;
+      border: none;
+      padding: 12px 22px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .quick-card {
+      background: #1E293B;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .quick-header {
+      font-size: 0.8rem;
+      color: #94A3B8;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .quick-amount {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #38BDF8;
+    }
+    .quick-progress {
+      height: 6px;
+      background: #334155;
+      border-radius: 3px;
+      margin: 12px 0;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #38BDF8;
+      border-radius: 3px;
+    }
+    .quick-details {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #CBD5E1;
+      border-top: 1px solid #334155;
+      padding-top: 10px;
+    }
+    .section-title {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .quick-access-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 35px;
+    }
+    .shortcut-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 22px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .shortcut-card:hover {
+      transform: translateY(-3px);
+    }
+    .card-blue { border-top: 5px solid var(--blue); }
+    .card-green { border-top: 5px solid var(--teal); }
+    .card-amber { border-top: 5px solid var(--amber); }
+    .card-purple { border-top: 5px solid var(--purple); }
+    .card-rose { border-top: 5px solid var(--rose); }
+    .shortcut-card h3 {
+      font-size: 1.1rem;
+      margin: 8px 0 4px 0;
+    }
+    .shortcut-card p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .card-action {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--blue);
+    }
+    .pillars-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 15px;
+      background: #D6E0EA;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .calc-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 30px;
+    }
+    .category-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+    .tag-amber { background: #FEF3C7; color: #92400E; }
+    .tag-blue { background: #DBEAFE; color: #1E40AF; }
+    .tag-green { background: #CCFBF1; color: #115E59; }
+    .tag-purple { background: #F3E8FF; color: #6B21A8; }
+    .tag-rose { background: #FFE4E6; color: #9F1239; }
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+      background: #F1F5F9;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-top: 15px;
+    }
+    .input-group {
+      margin-bottom: 12px;
+    }
+    .input-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .input-group input, .input-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #FFF;
+    }
+    .btn-primary {
+      width: 100%;
+      background: var(--blue);
+      color: #FFF;
+      border: none;
+      padding: 12px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .calc-results {
+      background: #FFF;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .res-box {
+      margin-bottom: 10px;
+      border-bottom: 1px solid #F1F5F9;
+      padding-bottom: 6px;
+    }
+    .res-box label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: block;
+    }
+    .res-box strong {
+      font-size: 1.3rem;
+      color: var(--blue);
+    }
+    .view-articles {
+      margin-top: 30px;
+    }
+    .article-content {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+    .news-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .site-footer {
+      background: var(--dark);
+      color: #94A3B8;
+      text-align: center;
+      padding: 25px 0;
+      font-size: 0.85rem;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container header-inner">
+      <a href="#" class="logo" id="logo-btn">📊 Cuenta<span>Claro</span></a>
+      <nav>
+        <a href="#" data-target="view-home" class="nav-link">Inicio</a>
+        <div class="dropdown">
+          <button class="dropdown-toggle">Calculadoras ▾</button>
+          <div class="dropdown-menu">
+            <a href="#" data-target="view-jubilacion">Jubilación</a>
+            <a href="#" data-target="view-hipoteca">Hipoteca</a>
+            <a href="#" data-target="view-sueldo">Sueldo Neto</a>
+            <a href="#" data-target="view-interes">Interés Compuesto</a>
+            <a href="#" data-target="view-tmb">Salud & TMB</a>
+            <a href="#" data-target="view-pau">Nota PAU</a>
+          </div>
+        </div>
+        <a href="#" data-target="view-articulos" class="nav-link">Artículos & Novedades</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- VISTA INICIO -->
+    <section id="view-home" class="view-panel active-view">
+      <div class="hero-banner">
+        <div class="hero-content">
+          <span class="hero-tag">Herramientas & Cálculos del Día a Día</span>
+          <h1>Toma decisiones informadas con tus números reales</h1>
+          <p>Sin banners publicitarios ni distracciones visuales.</p>
+          <button class="btn-hero" id="btn-explore-calcs">Comenzar un cálculo</button>
+        </div>
+        <div class="quick-card">
+          <div class="quick-header">● Simulador Rápido — Cuota Hipotecaria</div>
+          <div class="quick-amount">948,42 € <span style="font-size:0.9rem;color:#94A3B8;">/ mes</span></div>
+          <div class="quick-progress">
+            <div class="progress-fill" style="width:70%;"></div>
+          </div>
+          <div class="quick-details">
+            <div><span>Capital</span><strong style="color:#FFF;display:block;">200.000 €</strong></div>
+            <div><span>Intereses est.</span><strong style="color:#FFF;display:block;">84.526 €</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">
+        <h2>¿Qué deseas calcular hoy?</h2>
+      </div>
+
+      <div class="quick-access-grid">
+        <div class="shortcut-card card-blue" data-target="view-hipoteca">
+          <div>
+            <h3>🏡 Hipoteca Francés</h3>
+            <p>Calcula cuota mensual y desglose para cualquier banco en España.</p>
+          </div>
+          <span class="card-action">Calcular →</span>
+        </div>
+        <div class="shortcut-card card-green" data-target="view-sueldo">
+          <div>
+            <h3>💼 Sueldo Neto e IRPF</h3>
+            <p>Estimación exacta de tu nómina según tramos.</p>
+          </div>
+          <span class="card-action">Calcular →</span>
+        </div>
+        <div class="shortcut-card card-amber" data-target="view-jubilacion">
+          <div>
+            <h3>👴 Jubilación y Pensión</h3>
+            <p>Calcula tu edad legal y estimación de pensión.</p>
+          </div>
+          <span class="card-action">Calcular →</span>
+        </div>
+        <div class="shortcut-card card-purple" data-target="view-interes">
+          <div>
+            <h3>📈 Interés Compuesto</h3>
+            <p>Proyecta la evolución de tus ahorros.</p>
+          </div>
+          <span class="card-action">Calcular →</span>
+        </div>
+        <div class="shortcut-card card-rose" data-target="view-tmb">
+          <div>
+            <h3>❤️ Metabolismo TMB</h3>
+            <p>Calcula tu gasto calórico basal y necesidades diarias.</p>
+          </div>
+          <span class="card-action" style="color:var(--rose);">Calcular →</span>
+        </div>
+      </div>
+
+      <div class="pillars-section">
+        <div>⚖️ <strong>Normativa Oficial</strong><p>Adaptado a España y fórmulas científicas.</p></div>
+        <div>🔒 <strong>Privacidad Total</strong><p>Tus datos no salen del navegador.</p></div>
+        <div>💡 <strong>Transparencia</strong><p>Resultados inmediatos y desglosados.</p></div>
+      </div>
+
+      <div class="section-title" style="margin-top:35px;">
+        <h2>Últimas Novedades y Artículos de Interés</h2>
+      </div>
+      <div class="news-grid" id="home-news-container">
+        <i>Cargando novedades...</i>
+      </div>
+    </section>
+
+    <!-- VISTA JUBILACIÓN -->
+    <section id="view-jubilacion" class="view-panel">
+      <div class="calc-card">
+        <span class="category-tag tag-amber">Seguridad Social</span>
+        <h2>Calculadora de Jubilación y Pensión Estimada</h2>
+        <div class="calc-grid">
+          <div class="calc-inputs">
+            <div class="input-group">
+              <label>Tu edad actual:</label>
+              <input type="number" id="jubila-edad" value="35">
+            </div>
+            <div class="input-group">
+              <label>Años cotizados:</label>
+              <input type="number" id="jubila-cotizado" value="10">
+            </div>
+            <div class="input-group">
+              <label>Salario Bruto (€/año):</label>
+              <input type="number" id="jubila-salario" value="28000">
+            </div>
+            <button class="btn-primary" id="btn-calc-jubilacion">Calcular</button>
+          </div>
+          <div class="calc-results" id="res-jubilacion">
+            <i>Introduce tus datos.</i>
+          </div>
+        </div>
+      </div>
+      <div class="view-articles">
+        <article class="article-content" id="art-jubilacion">
+          <h3>¿Qué es la pensión de jubilación?</h3>
+          <p>Es una prestación económica contributiva que perciben las personas tras finalizar su etapa laboral, calculada a partir de sus años cotizados a la Seguridad Social.</p>
+          <h3 style="margin-top:15px;">¿Para qué sirve esta calculadora?</h3>
+          <p>Te ayuda a prever a qué edad podrás jubilarte legalmente en España y tener una estimación aproximada del importe mensual que percibirás.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- VISTA HIPOTECA -->
+    <section id="view-hipoteca" class="view-panel">
+      <div class="calc-card">
+        <span class="category-tag tag-blue">Vivienda</span>
+        <h2>Calculadora de Hipoteca (Sistema Francés)</h2>
+        <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:12px 16px;margin:15px 0;font-size:0.85rem;color:#1E40AF;">
+          <strong>💡 Válida para prácticamente todos los bancos en España:</strong> El sistema francés es el estándar que utilizan entidades como <strong>BBVA, CaixaBank, Santander, ING, Sabadell, Bankinter, Openbank, Abanca, Unicaja</strong> y la totalidad de cajas de ahorro para calcular sus cuotas.
+        </div>
+        <div class="calc-grid">
+          <div class="calc-inputs">
+            <div class="input-group">
+              <label>Capital (€):</label>
+              <input type="number" id="hipoteca-capital" value="180000">
+            </div>
+            <div class="input-group">
+              <label>Interés Nominal Anual (%):</label>
+              <input type="number" id="hipoteca-interes" value="3.2" step="0.05">
+            </div>
+            <div class="input-group">
+              <label>Plazo (Años):</label>
+              <input type="number" id="hipoteca-anos" value="25">
+            </div>
+            <button class="btn-primary" id="btn-calc-hipoteca">Calcular</button>
+          </div>
+          <div class="calc-results" id="res-hipoteca">
+            <i>Introduce tus datos.</i>
+          </div>
+        </div>
+      </div>
+      <div class="view-articles">
+        <article class="article-content" id="art-hipoteca">
+          <h3>¿Qué es el Sistema Francés de Amortización?</h3>
+          <p>Es el modelo de préstamo hipotecario más común. En él, la cuota mensual se mantiene constante durante el periodo fijado si el interés es fijo. Al principio pagas más intereses que capital, y al final inviertes el orden.</p>
+          <h3 style="margin-top:15px;">¿Para qué sirve?</h3>
+          <p>Permite conocer con exactitud el pago mensual necesario para devolver el préstamo de tu vivienda y el total real de intereses que pagarás al banco.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- VISTA SUELDO NETO -->
+    <section id="view-sueldo" class="view-panel">
+      <div class="calc-card">
+        <span class="category-tag tag-green">Fiscal</span>
+        <h2>Calculadora de Sueldo Neto</h2>
+        <div class="calc-grid">
+          <div class="calc-inputs">
+            <div class="input-group">
+              <label>Salario Bruto Anual (€):</label>
+              <input type="number" id="sueldo-bruto" value="25000">
+            </div>
+            <div class="input-group">
+              <label>Nº Pagas:</label>
+              <select id="sueldo-pagas">
+                <option value="12">12</option>
+                <option value="14">14</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>Retención IRPF (%):</label>
+              <input type="number" id="sueldo-irpf" value="14">
+            </div>
+            <button class="btn-primary" id="btn-calc-sueldo">Calcular</button>
+          </div>
+          <div class="calc-results" id="res-sueldo">
+            <i>Introduce tu salario bruto.</i>
+          </div>
+        </div>
+      </div>
+      <div class="view-articles">
+        <article class="article-content" id="art-sueldo">
+          <h3>¿Qué es el Sueldo Neto?</h3>
+          <p>El sueldo neto es el dinero líquido final que se ingresa en tu cuenta bancaria cada mes tras restar las deducciones por IRPF y aportaciones a la Seguridad Social de tu Salario Bruto.</p>
+          <h3 style="margin-top:15px;">¿Para qué sirve?</h3>
+          <p>Te ayuda a planificar tu presupuesto personal o saber exactamente cuánto cobrarás en mano al negociar una oferta laboral.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- VISTA INTERÉS COMPUESTO -->
+    <section id="view-interes" class="view-panel">
+      <div class="calc-card">
+        <span class="category-tag tag-purple">Finanzas</span>
+        <h2>Interés Compuesto</h2>
+        <div class="calc-grid">
+          <div class="calc-inputs">
+            <div class="input-group">
+              <label>Capital Inicial (€):</label>
+              <input type="number" id="interes-capital" value="10000">
+            </div>
+            <div class="input-group">
+              <label>Rentabilidad Anual (%):</label>
+              <input type="number" id="interes-tasa" value="6">
+            </div>
+            <div class="input-group">
+              <label>Años:</label>
+              <input type="number" id="interes-anos" value="15">
+            </div>
+            <button class="btn-primary" id="btn-calc-interes">Calcular</button>
+          </div>
+          <div class="calc-results" id="res-interes">
+            <i>Introduce parámetros.</i>
+          </div>
+        </div>
+      </div>
+      <div class="view-articles">
+        <article class="article-content" id="art-interes">
+          <h3>¿Qué es el Interés Compuesto?</h3>
+          <p>Es un proceso financiero mediante el cual los beneficios generados por tus ahorros se suman a la cantidad invertida original para producir nuevos intereses periodo a periodo.</p>
+          <h3 style="margin-top:15px;">¿Para qué sirve?</h3>
+          <p>Sirve para proyectar el crecimiento exponencial del ahorro y la inversión a largo plazo.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- VISTA SALUD TMB -->
+    <section id="view-tmb" class="view-panel">
+      <div class="calc-card">
+        <span class="category-tag tag-rose">Salud & Nutrición</span>
+        <h2>Calculadora de Tasa Metabólica Basal (TMB / Calorías)</h2>
+        <div class="calc-grid">
+          <div class="calc-inputs">
+            <div class="input-group">
+              <label>Sexo Biológico:</label>
+              <select id="tmb-sexo">
+                <option value="hombre">Hombre</option>
+                <option value="mujer">Mujer</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>Edad (Años):</label>
+              <input type="number" id="tmb-edad" value="30">
+            </div>
+            <div class="input-group">
+              <label>Peso (kg):</label>
+              <input type="number" id="tmb-peso" value="70">
+            </div>
+            <div class="input-group">
+              <label>Altura (cm):</label>
+              <input type="number" id="tmb-altura" value="175">
+            </div>
+            <div class="input-group">
+              <label>Nivel de Actividad Física:</label>
+              <select id="tmb-actividad">
+                <option value="1.2">Sedentario (poco o ningún ejercicio)</option>
+                <option value="1.375">Ligero (1-3 días a la semana)</option>
+                <option value="1.55">Moderado (3-5 días a la semana)</option>
+                <option value="1.725">Fuerte (6-7 días a la semana)</option>
+                <option value="1.9">Muy fuerte / Atleta</option>
+              </select>
+            </div>
+            <button class="btn-primary" id="btn-calc-tmb" style="background:var(--rose);">Calcular TMB y Calorías</button>
+          </div>
+          <div class="calc-results" id="res-tmb">
+            <i>Introduce tus datos físicos para calcular tu metabolismo.</i>
+          </div>
+        </div>
+      </div>
+      <div class="view-articles">
+        <article class="article-content" id="art-tmb">
+          <h3>¿Qué es la Tasa Metabólica Basal (TMB)?</h3>
+          <p>La Tasa Metabólica Basal es la cantidad mínima de energía (calorías) que tu cuerpo necesita para mantenerse con vida y funcionar en reposo total durante 24 horas.</p>
+          <h3 style="margin-top:15px;">¿Para qué sirve?</h3>
+          <p>Sirve como base fundamental para calcular tu gasto calórico total diario y estructurar objetivos de mantenimiento, pérdida de grasa o ganancia muscular.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- VISTA PAU -->
+    <section id="view-pau" class="view-panel">
+      <div class="calc-card">
+        <span class="category-tag tag-blue">Educación</span>
+        <h2>Nota PAU / EBAU (Sobre 14)</h2>
+        <div class="calc-grid">
+          <div class="calc-inputs">
+            <div class="input-group">
+              <label>Bachillerato (0-10):</label>
+              <input type="number" id="pau-bach" value="8.2">
+            </div>
+            <div class="input-group">
+              <label>Fase General (0-10):</label>
+              <input type="number" id="pau-ebau" value="7.5">
+            </div>
+            <div class="input-group">
+              <label>Específica 1:</label>
+              <div style="display:flex;gap:10px;">
+                <input type="number" id="pau-m1" value="8.5">
+                <select id="pau-p1">
+                  <option value="0.2">0.2</option>
+                  <option value="0.1">0.1</option>
+                </select>
+              </div>
+            </div>
+            <div class="input-group">
+              <label>Específica 2:</label>
+              <div style="display:flex;gap:10px;">
+                <input type="number" id="pau-m2" value="7.0">
+                <select id="pau-p2">
+                  <option value="0.2">0.2</option>
+                  <option value="0.1">0.1</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn-primary" id="btn-calc-pau">Calcular</button>
+          </div>
+          <div class="calc-results" id="res-pau">
+            <i>Introduce notas.</i>
+          </div>
+        </div>
+      </div>
+      <div class="view-articles">
+        <article class="article-content" id="art-pau">
+          <h3>¿Qué es la Nota de Admisión de la PAU?</h3>
+          <p>Es la nota de acceso a la universidad obtenida mediante la ponderación de las notas de Bachillerato (60%) y la Selectividad (40%), sumando la fase voluntaria específica (hasta 4 puntos extra).</p>
+          <h3 style="margin-top:15px;">¿Para qué sirve?</h3>
+          <p>Te indica tu nota final global sobre 14 para poder comparar con las notas de corte universitarias.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- VISTA TODOS LOS ARTÍCULOS -->
+    <section id="view-articulos" class="view-panel">
+      <div class="section-title">
+        <h2>Todos los Artículos y Novedades</h2>
+        <p style="color:var(--muted);font-size:0.9rem;">Contenido actualizado automáticamente mediante el feed seleccionado.</p>
+      </div>
+      <div class="news-grid" id="all-news-container">
+        <i>Cargando novedades...</i>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>CuentaClaro</strong> — Herramientas adaptadas a España e internacionales.</p>
+  </footer>
+
+  <!-- SCRIPT DE FUNCIONALIDAD COMPLETA -->
+  <script>
+    // 1. SISTEMA DE NAVEGACIÓN ENTRE VISTAS
+    function showView(viewId) {
+      document.querySelectorAll('.view-panel').forEach(panel => {
+        panel.classList.remove('active-view');
+      });
+      const activePanel = document.getElementById(viewId);
+      if (activePanel) {
+        activePanel.classList.add('active-view');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    document.querySelectorAll('[data-target]').forEach(element => {
+      element.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetView = element.getAttribute('data-target');
+        showView(targetView);
+      });
+    });
+
+    document.getElementById('logo-btn').addEventListener('click', (e) => {
+      e.preventDefault();
+      showView('view-home');
+    });
+
+    document.getElementById('btn-explore-calcs').addEventListener('click', () => {
+      showView('view-hipoteca');
+    });
+
+    // 2. CÁLCULOS
+    // TMB (Salud)
+    document.getElementById('btn-calc-tmb').addEventListener('click', () => {
+      const sexo = document.getElementById('tmb-sexo').value;
+      const edad = parseFloat(document.getElementById('tmb-edad').value) || 0;
+      const peso = parseFloat(document.getElementById('tmb-peso').value) || 0;
+      const altura = parseFloat(document.getElementById('tmb-altura').value) || 0;
+      const actividad = parseFloat(document.getElementById('tmb-actividad').value) || 1.2;
+
+      let tmb = 0;
+      if (sexo === 'hombre') {
+        tmb = (10 * peso) + (6.25 * altura) - (5 * edad) + 5;
+      } else {
+        tmb = (10 * peso) + (6.25 * altura) - (5 * edad) - 161;
+      }
+
+      const tdee = Math.round(tmb * actividad);
+      tmb = Math.round(tmb);
+
+      document.getElementById('res-tmb').innerHTML = `
+        <div class="res-box">
+          <label>Tasa Metabólica Basal (Reposo):</label>
+          <strong>${tmb} kcal/día</strong>
+        </div>
+        <div class="res-box">
+          <label>Mantenimiento Calórico:</label>
+          <strong>${tdee} kcal/día</strong>
+        </div>
+        <div class="res-box">
+          <label>Objetivo Déficit (-20%):</label>
+          <strong style="color:var(--teal);">${Math.round(tdee * 0.8)} kcal/día</strong>
+        </div>
+      `;
+    });
+
+    // Hipoteca
+    document.getElementById('btn-calc-hipoteca').addEventListener('click', () => {
+      const P = parseFloat(document.getElementById('hipoteca-capital').value) || 0;
+      const annualRate = parseFloat(document.getElementById('hipoteca-interes').value) || 0;
+      const years = parseFloat(document.getElementById('hipoteca-anos').value) || 0;
+
+      const r = (annualRate / 100) / 12;
+      const n = years * 12;
+
+      let monthlyPayment = 0;
+      if (r > 0) {
+        monthlyPayment = P * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+      } else {
+        monthlyPayment = P / n;
+      }
+
+      const totalPaid = monthlyPayment * n;
+      const totalInterest = totalPaid - P;
+
+      document.getElementById('res-hipoteca').innerHTML = `
+        <div class="res-box">
+          <label>Cuota Mensual:</label>
+          <strong>${monthlyPayment.toFixed(2)} € / mes</strong>
+        </div>
+        <div class="res-box">
+          <label>Total Intereses:</label>
+          <strong>${totalInterest.toFixed(2)} €</strong>
+        </div>
+        <div class="res-box">
+          <label>Total a Devolver:</label>
+          <strong>${totalPaid.toFixed(2)} €</strong>
+        </div>
+      `;
+    });
+
+    // Sueldo Neto
+    document.getElementById('btn-calc-sueldo').addEventListener('click', () => {
+      const bruto = parseFloat(document.getElementById('sueldo-bruto').value) || 0;
+      const pagas = parseInt(document.getElementById('sueldo-pagas').value) || 12;
+      const irpfPct = parseFloat(document.getElementById('sueldo-irpf').value) || 0;
+
+      const irpfCuota = bruto * (irpfPct / 100);
+      const ssCuota = bruto * 0.0635;
+      const netoAnual = bruto - irpfCuota - ssCuota;
+      const netoMensual = netoAnual / pagas;
+
+      document.getElementById('res-sueldo').innerHTML = `
+        <div class="res-box">
+          <label>Sueldo Neto Anual:</label>
+          <strong>${netoAnual.toFixed(2)} €</strong>
+        </div>
+        <div class="res-box">
+          <label>Sueldo Neto Mensual (${pagas} pagas):</label>
+          <strong style="color:var(--teal);">${netoMensual.toFixed(2)} € / mes</strong>
+        </div>
+      `;
+    });
+
+    // Jubilación
+    document.getElementById('btn-calc-jubilacion').addEventListener('click', () => {
+      const edad = parseInt(document.getElementById('jubila-edad').value) || 0;
+      const salario = parseFloat(document.getElementById('jubila-salario').value) || 0;
+
+      const anosFaltantes = Math.max(0, 67 - edad);
+      const estPension = (salario / 14) * 0.75;
+
+      document.getElementById('res-jubilacion').innerHTML = `
+        <div class="res-box">
+          <label>Edad Legal Estimada:</label>
+          <strong>67 años</strong>
+        </div>
+        <div class="res-box">
+          <label>Años Restantes:</label>
+          <strong>${anosFaltantes} años</strong>
+        </div>
+        <div class="res-box">
+          <label>Pensión Estimada:</label>
+          <strong>${estPension.toFixed(2)} € / mes</strong>
+        </div>
+      `;
+    });
+
+    // Interés Compuesto
+    document.getElementById('btn-calc-interes').addEventListener('click', () => {
+      const capital = parseFloat(document.getElementById('interes-capital').value) || 0;
+      const tasa = parseFloat(document.getElementById('interes-tasa').value) / 100 || 0;
+      const anos = parseInt(document.getElementById('interes-anos').value) || 0;
+
+      const total = capital * Math.pow(1 + tasa, anos);
+      const ganancias = total - capital;
+
+      document.getElementById('res-interes').innerHTML = `
+        <div class="res-box">
+          <label>Capital Final Acumulado:</label>
+          <strong style="color:var(--purple);">${total.toFixed(2)} €</strong>
+        </div>
+        <div class="res-box">
+          <label>Intereses Generados:</label>
+          <strong>${ganancias.toFixed(2)} €</strong>
+        </div>
+      `;
+    });
+
+    // PAU
+    document.getElementById('btn-calc-pau').addEventListener('click', () => {
+      const bach = parseFloat(document.getElementById('pau-bach').value) || 0;
+      const ebau = parseFloat(document.getElementById('pau-ebau').value) || 0;
+      const m1 = parseFloat(document.getElementById('pau-m1').value) || 0;
+      const p1 = parseFloat(document.getElementById('pau-p1').value) || 0;
+      const m2 = parseFloat(document.getElementById('pau-m2').value) || 0;
+      const p2 = parseFloat(document.getElementById('pau-p2').value) || 0;
+
+      const faseAcceso = (bach * 0.6) + (ebau * 0.4);
+      const notaFinal = faseAcceso + (m1 * p1) + (m2 * p2);
+
+      document.getElementById('res-pau').innerHTML = `
+        <div class="res-box">
+          <label>Fase de Acceso (sobre 10):</label>
+          <strong>${faseAcceso.toFixed(3)}</strong>
+        </div>
+        <div class="res-box">
+          <label>Nota Final (sobre 14):</label>
+          <strong style="color:var(--blue);">${notaFinal.toFixed(3)}</strong>
+        </div>
+      `;
+    });
+
+    // 3. CARGA AUTOMÁTICA DEL FEED DESDE LA URL DE INOREADER / YOUTUBE
+    async function cargarNoticiasInoreader() {
+      // TU URL INTEGRADA DIRECTAMENTE:
+      const urlRSS = "https://www.youtube.com/feeds/videos.xml?channel_id=UCnsvJeZO4RigQ898WdDNoBw"; 
+      
+      try {
+        const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(urlRSS)}`);
+        const data = await res.json();
+
+        if (data.status === 'ok' && data.items.length > 0) {
+          const htmlCards = data.items.map(item => `
+            <div class="news-card">
+              <div>
+                <span class="category-tag tag-blue">Novedades</span>
+                <h3 style="font-size:0.95rem; margin:8px 0;">${item.title}</h3>
+              </div>
+              <a href="${item.link}" target="_blank" style="margin-top:12px; font-weight:bold; color:var(--blue); font-size:0.85rem; text-decoration:none;">Ver contenido →</a>
+            </div>
+          `).join('');
+
+          // Pintar en el inicio (3 primeras)
+          const homeNews = document.getElementById('home-news-container');
+          if (homeNews) {
+            homeNews.innerHTML = data.items.slice(0, 3).map(item => `
+              <div class="news-card">
+                <div>
+                  <span class="category-tag tag-blue">Novedades</span>
+                  <h3 style="font-size:0.95rem; margin:8px 0;">${item.title}</h3>
+                </div>
+                <a href="${item.link}" target="_blank" style="margin-top:12px; font-weight:bold; color:var(--blue); font-size:0.85rem; text-decoration:none;">Ver contenido →</a>
+              </div>
+            `).join('');
+          }
+
+          // Pintar en la sección dedicada de artículos
+          const allNews = document.getElementById('all-news-container');
+          if (allNews) {
+            allNews.innerHTML = htmlCards;
+          }
+        }
+      } catch (e) {
+        console.log("Error cargando el feed automático", e);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', cargarNoticiasInoreader);
+  </script>
+<script src="js/database.js"></script>
+  <script src="js/calculadoras.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
